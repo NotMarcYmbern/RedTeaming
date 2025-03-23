@@ -1,0 +1,29 @@
+#Function to copy your own IP address to clipboard
+myip() {
+    # Get the IP address of eth0
+    IP=$(ip -4 addr show tun0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+
+    if [[ -n "$IP" ]]; then
+        echo -n "$IP" | xclip -selection clipboard
+    else
+        echo "No IP found for tun0!"
+    fi
+}
+
+
+
+# Function to save pasted IP address to the ipaste command
+ipaste() {
+	if [[ $# -eq 1 ]]; then
+		echo "$1" > ~/.ipstore
+		printf "%s" "$1" | xclip -selection clipboard
+	elif [[ $# -eq 0 ]]; then
+		if [[ -f ~/.ipstore ]]; then
+			printf "%s" "$(cat ~/.ipstore)" | xclip -selection clipboard
+		else
+			echo "No IP address stored."
+		fi
+	else
+		echo "Usage: ipaste [IPADDRESS]"
+	fi
+}
